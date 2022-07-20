@@ -97,6 +97,7 @@ class Room {
         this.WSS.on("connection", ws => {
             this.addClient(cId, ws);
             this.saveClientName(cId, cName)
+            
             this.sendMessageToAll(["settings", "state"], [this.settings, this.state])
             
             ws.on("message", rawData => {
