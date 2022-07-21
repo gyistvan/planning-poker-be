@@ -1,13 +1,12 @@
-import {WebSocketServer} from 'ws';
+import { WebSocketServer } from 'ws';
 
 class Rooms {
     rooms = new Map()
-    actualPort = 8081;
 
     constructor(){}
 
     createRoom(roomName) {
-        this.rooms.set(roomName, new Room(roomName, this.actualPort++))
+        this.rooms.set(roomName, new Room(roomName))
     }
 
     hasRoom(roomName){
@@ -31,14 +30,18 @@ class Room {
     owner
     settings = { isCardsVisible: false }
 
-    constructor(roomName, port){
+    constructor(roomName){
         this.roomName = roomName;
-        this.WSS = new WebSocketServer({ port })
+        this.WSS = new WebSocketServer({ noServer: true })
         this.init()
     }
 
     getPort(){
         return this.WSS.options.port
+    }
+
+    getSocket(){
+        return this.WSS
     }
 
     addClient(clientId, ws){
@@ -95,6 +98,7 @@ class Room {
 
     init(){
         this.WSS.on("connection", ws => {
+            console.log("connection emitted")
             this.addClient(cId, ws);
             this.saveClientName(cId, cName)
             
@@ -144,7 +148,7 @@ class Room {
     }
 }
 
-const rooms = new Rooms();
+export const rooms = new Rooms();
 let cId, cName
 
 export function createRoom(req, res){
@@ -160,8 +164,7 @@ export function createRoom(req, res){
     }
     else {     
         rooms.createRoom(roomName)
-        let room = rooms.getRoom(roomName);
-        let port = room.getPort()
+        let port =  4000
         res.json({ port })
     }
   
@@ -173,10 +176,9 @@ export function joinRoom(req, res) {
     cName = clientName;
     
     if (rooms.hasRoom(roomName)){
-        let room = rooms.getRoom(roomName);
-        let port = room.getPort()
+        let port = 4000
         res.json({ port })
-    }
+    } 
     else {
        res.json({error: true, message: `There is no room with name: ${roomName}`})
     }
