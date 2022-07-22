@@ -164,7 +164,7 @@ export function createRoom(req, res){
     }
     else {     
         rooms.createRoom(roomName)
-        let port =  4000
+        let port = process.env.PORT ?? 4000
         res.json({ port })
     }
   
