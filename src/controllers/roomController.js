@@ -98,11 +98,10 @@ class Room {
 
     init(){
         this.WSS.on("connection", ws => {
-            console.log("connection emitted")
             this.addClient(cId, ws);
             this.saveClientName(cId, cName)
             
-            this.sendMessageToAll(["settings", "state"], [this.settings, this.state])
+            this.sendMessageToAll(["settings", "state", "newClientConnected"], [this.settings, this.state, {clientName: cName, clientId: cId}])
             
             ws.on("message", rawData => {
                 let parsedData = JSON.parse(rawData.toString("utf-8"))
@@ -159,7 +158,7 @@ export function createRoom(req, res){
     if (rooms.hasRoom(roomName)){
         res.status(400).send({
             error: true,
-            message: "room already exists"
+            message: "Room already exists"
         })
     }
     else {     
@@ -180,7 +179,7 @@ export function joinRoom(req, res) {
         res.json({ port })
     } 
     else {
-       res.json({error: true, message: `There is no room with name: ${roomName}`})
+       res.status(400).send({error: true, message: `There is no room with name: ${roomName}`})
     }
 }
 
