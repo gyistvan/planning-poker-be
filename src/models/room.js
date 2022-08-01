@@ -1,28 +1,7 @@
 import { WebSocketServer } from "ws";
+import { cId, cName } from '../controllers/room-controller.js';
 
-class Rooms {
-  rooms = new Map();
-
-  constructor() {}
-
-  createRoom(roomName) {
-    this.rooms.set(roomName, new Room(roomName));
-  }
-
-  hasRoom(roomName) {
-    return this.rooms.has(roomName);
-  }
-
-  getRoom(roomName) {
-    return this.rooms.get(roomName);
-  }
-
-  removeRoom(roomName) {
-    this.rooms.delete(roomName);
-  }
-}
-
-class Room {
+export class Room {
   roomName;
   clients = new Map();
   WSS;
@@ -150,43 +129,5 @@ class Room {
         console.log("Some Error occurred");
       };
     });
-  }
-}
-
-export const rooms = new Rooms();
-let cId, cName;
-
-export function createRoom(req, res) {
-  const { roomName, clientId, clientName } = req.params;
-  cId = clientId;
-  cName = clientName;
-
-  if (rooms.hasRoom(roomName)) {
-    res.status(400).send({
-      error: true,
-      message: "Room already exists",
-    });
-  } else {
-    rooms.createRoom(roomName);
-    let port = process.env.PORT ?? 4000;
-    res.json({ port });
-  }
-}
-
-export function joinRoom(req, res) {
-  const { roomName, clientId, clientName } = req.params;
-  cId = clientId;
-  cName = clientName;
-
-  if (rooms.hasRoom(roomName)) {
-    let port = 4000;
-    res.json({ port });
-  } else {
-    res
-      .status(400)
-      .send({
-        error: true,
-        message: `There is no room with name: ${roomName}`,
-      });
   }
 }

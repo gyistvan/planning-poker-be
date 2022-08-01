@@ -1,8 +1,8 @@
 import express from "express";
-import routes from "./src/routes/appRoutes.js";
+import routes from "./src/routes/app-routes.js";
 import cors from "cors";
 import { parse } from "url";
-import { rooms } from "./src/controllers/roomController.js";
+import { rooms } from "./src/controllers/room-controller.js";
 
 const app = express();
 app.use(cors());

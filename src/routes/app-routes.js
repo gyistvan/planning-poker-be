@@ -1,4 +1,4 @@
-import { createRoom, joinRoom } from "../controllers/roomController.js";
+import { createRoom, joinRoom } from "../controllers/room-controller.js";
 
 export default function routes(app) {
   app.route("/createRoom/:roomName/:clientId/:clientName").post(createRoom);
